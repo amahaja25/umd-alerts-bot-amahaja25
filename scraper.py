@@ -13,30 +13,33 @@ html = response.content
 
 soup = BeautifulSoup(html, features= "html.parser")
 
-# this specifies which specific links i want. without this, i would also end up scraping things like the about and faq page links.
+# this specifies which specific links i want. without this, i would also end up scraping things like the about and faq page links
 main = soup.find('ul', {"class": "feed"})
 
+# scraper start but note that this isn't exactly what i want. i have to figure out how to go through the individual alert links and get the text from there
 lis = main.find_all('li')
 for li in lis:
     list_of_cells = []
-    if li.find('a'):
-        link = 'https://alert.umd.edu/alerts' + li.find('a')['href']
-        list_of_cells.append(link)
+    title = li.find('a')
+    if title:
+        links = 'https://alert.umd.edu/alerts' + li.find('a')['href']
+        list_of_cells.append(links)
+        title_text = title.text.strip()
+        list_of_cells.append(title_text)
     day = li.find('time')
     if day:
         date = day.text.strip()
         list_of_cells.append(date)
-    paragraph = li.find('p')
-    # note that this isn't exactly what i want. i have to figure out how to go to the individual alert link and get the text from there.
-    if paragraph:
-        text = paragraph.text.strip()
+    subhead = li.find('p')
+    if subhead:
+        text = subhead.text.strip()
         list_of_cells.append(text)
     list_of_rows.append(list_of_cells)
 
-# if i want to also scrape the past alerts, i have to find a way to iterate through all the pages at the bottom. but each page doesn't have a separate url which is annoying so have to deal with that.
+# if i want to also scrape the past alerts, i have to find a way to iterate through all the pages at the bottom. but each page doesn't have a separate url which is annoying so have to deal with that
 
 # write to the umd_alerts.csv file
 outfile = open("umd_alerts.csv", "w")
 writer = csv.writer(outfile)
-writer.writerow(["link", "date", "text"])
+writer.writerow(["link", "title","date", "subhead"])
 writer.writerows(list_of_rows)
