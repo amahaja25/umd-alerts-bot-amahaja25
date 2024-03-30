@@ -40,18 +40,6 @@ for li in lis:
     list_of_cells = [link, title_text, date, text, article_text]
     list_of_rows.append(list_of_cells)
     
-    
- # ok i got stumped here because the content of the actual alert is in a p tag for some, in a div tag for others and i thought i could get around it by getting the text from inside the meta tag's content class but the text isn't actually in there for all of the alerts.   
-    #if title:
-        #alert_response = requests.get(links, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0'})
-        #alert_soup = BeautifulSoup(alert_response.content, 'html.parser')
-        #alert_content = alert_soup.find('meta', {"class": "content"})
-        #if alert_content:
-         #   alert_text = alert_content.text.strip()
-          #  list_of_cells.append(alert_text)
-        #else:
-         #   list_of_cells.append("none")
-    #list_of_rows.append(list_of_cells)
 
 
 #s = requests.Session()
