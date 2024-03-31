@@ -1,59 +1,92 @@
 # import libraries
+import os
 import csv
+import time
 import requests
 from bs4 import BeautifulSoup
 from newspaper import Article
+from slack import WebClient
+from slack.errors import SlackApiError
+
 
 list_of_rows = []
 
+# python requests session 
+s = requests.Session()
+
 # this is the url i would like to scrape
-url = 'https://alert.umd.edu/alerts' 
+base_url = 'https://alert.umd.edu/alerts?page=' 
 
-response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0'})
-html = response.content
+# so theoretically there should be 600 rows in my csv (6 per page) but i am not getting some of the links?
+# on the actual site, the most recent alert is March 12, but the most recent one the scraper got is Feb. 6
+# i tried to experiment and fix this but i need help
+for page in range(0, 100):
 
-soup = BeautifulSoup(html, features= "html.parser")
+    #if page == 0:
+        #url = 'https://alert.umd.edu/alerts'
+        # i have learned that sometimes the umd alerts page goes blank randomly which is just great!!
+        # this means it cannot run/find the 'ul'
+    #else:
+    url = f'{base_url}{page}'
 
-# this specifies which links i want. without this, i would also end up scraping things like the about and faq page links
-main = soup.find('ul', {"class": "feed"})
+    time.sleep(1)
 
-# scraper start but note that this isn't exactly what i want. i have to figure out how to go through the individual alert links and get the text from there
-
-lis = main.find_all('li')
-for li in lis:
-    list_of_cells = []
-    title = li.find('a')
+    response = s.get(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0'})
+    html = response.content
+    soup = BeautifulSoup(html, features= "html.parser")
+    
+    main = soup.find('ul', {"class": "feed"})
+    lis = main.find_all('li')
+    for li in lis:
+        list_of_cells = []
+        title = li.find('a')
     if title:
         link = 'https://alert.umd.edu/' + li.find('a')['href']
         article = Article(link)
         article.download() 
         article.parse()
 
-        article_text = article.text
+        alert_text = article.text
         title_text = title.text.strip()
 
-    day = li.find('time')
-    date = day.text.strip()
-    subhead = li.find('p')
-    text = subhead.text.strip()
-    
-    list_of_cells = [link, title_text, date, text, article_text]
+        day = li.find('time')
+        date = day.text.strip()
+        subhead = li.find('p')
+        text = subhead.text.strip()
+
+    list_of_cells = [link, title_text, date, text, alert_text]
     list_of_rows.append(list_of_cells)
-    
+
+    time.sleep(1)
 
 
-#s = requests.Session()
-#s.get('https://alert.umd.edu/?page=1')
-#r = s.get('')
-
-
-
-# if i want to also scrape the past alerts, i have to find a way to iterate through all the pages at the bottom. but each page doesn't have a separate url which is annoying so have to deal with that
-# python requests session 
-
-
-# write to the umd_alerts.csv file
+# write to umd_alerts.csv file
 outfile = open("umd_alerts.csv", "w")
 writer = csv.writer(outfile)
-writer.writerow(["link", "title","date", "subhead", "article.text"])
+writer.writerow(["link", "title","date", "subhead", "alert_text"])
 writer.writerows(list_of_rows)
+
+#slack stuff
+'''
+slack_token = os.environ.get('SLACK_API_TOKEN')
+
+client = WebClient(token=slack_token)
+
+msg = "Please react to this message with a thumbs up or down if you can/can't cover this:\n Link: {row[0]} \n Date: {row[3]} \n Title: {row[2]} \n Alert: {row[5][:500]}
+
+csv = "umd_alerts.csv"
+
+
+try:
+    response = client.chat_postMessage(
+        channel="slack-bots",
+        text=msg,
+        unfurl_links=True, 
+        unfurl_media=True
+    )
+    print("success!")
+except SlackApiError as e:
+    assert e.response["ok"] is False
+    assert e.response["error"]
+    print(f"Got an error: {e.response['error']}")
+'''
