@@ -19,7 +19,8 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install requests bs4
+        run: pip install requests bs4 newspaper3k
+        
 
       - name: run scraper
         run: python scraper.py
