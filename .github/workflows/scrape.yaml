@@ -1,11 +1,11 @@
 name: Scrape
 
-on:
-  push:
-    branches:
-      - '*'
-  schedule: 
-    - cron: "*/5 * * * *"
+#on:
+ # push:
+  #  branches:
+   #   - '*'
+  #schedule: 
+   # - cron: "*/5 * * * *"
 
 jobs:
   scheduled:
