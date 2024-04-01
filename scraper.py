@@ -4,7 +4,7 @@ import csv
 import time
 import requests
 from bs4 import BeautifulSoup
-from newspaper3k import Article
+from newspaper import Article
 from slack import WebClient
 from slack.errors import SlackApiError
 
