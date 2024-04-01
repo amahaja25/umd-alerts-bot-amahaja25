@@ -48,7 +48,7 @@ default_url = 'https://alert.umd.edu/alerts'
 scrape_page(url = default_url)
 
 base_url = 'https://alert.umd.edu/alerts?page='
-for page in range(0, 100):
+for page in range(0, 90):
     
     url = f'{base_url}{page}'
     scrape_page(url)
