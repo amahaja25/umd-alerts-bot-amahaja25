@@ -21,7 +21,8 @@ jobs:
           python-version: '3.10.13'
 
       - name: Install dependencies
-        run: pip3 install requests bs4 newspaper3k
+        run: pip3 install requests bs4 newspaper3k lxml_html_clean
+
         
 
       - name: run scraper
