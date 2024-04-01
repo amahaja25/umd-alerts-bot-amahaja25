@@ -45,7 +45,7 @@ def scrape_page(url):
 time.sleep(1)
 
 default_url = 'https://alert.umd.edu/alerts' 
-scrape_page(url = default_url)
+scrape_page(default_url)
 
 base_url = 'https://alert.umd.edu/alerts?page='
 for page in range(0, 90):
