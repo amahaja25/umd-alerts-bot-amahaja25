@@ -22,25 +22,29 @@ def scrape_page(url):
     soup = BeautifulSoup(html, features= "html.parser")
     
     main = soup.find('ul', {"class": "feed"})
-    lis = main.find_all('li')
-    for li in lis:
-        title = li.find('a')
-        if title:
-            link = 'https://alert.umd.edu/' + li.find('a')['href']
-            article = Article(link)
-            article.download() 
-            article.parse()
+    try:
+        lis = main.find_all('li')
+        for li in lis:
+            title = li.find('a')
+            if title:
+                link = 'https://alert.umd.edu/' + li.find('a')['href']
+                article = Article(link)
+                article.download() 
+                article.parse()
 
-            alert_text = article.text
-            title_text = title.text.strip()
+                alert_text = article.text
+                title_text = title.text.strip()
 
-            day = li.find('time')
-            date = day.text.strip()
-            subhead = li.find('p')
-            text = subhead.text.strip()
+                day = li.find('time')
+                date = day.text.strip()
+                subhead = li.find('p')
+                text = subhead.text.strip()
   
-        list_of_cells = [link, title_text, date, text, alert_text]
-        list_of_rows.append(list_of_cells)
+            list_of_cells = [link, title_text, date, text, alert_text]
+            list_of_rows.append(list_of_cells)
+    except:
+        print("Alerts are not working right now.")
+
 
 time.sleep(1)
 
