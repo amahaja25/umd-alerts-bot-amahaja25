@@ -19,7 +19,7 @@
 4/1
 * I was playing around with github actions to try to get the automation to work, and it wasn't working when the alerts website went blank
 * I tried to account for error when the website goes blank as it does.
-* but i learned that the umd alerts website is updated much later than when the actual alerts go out.
+* but i learned that the umd alerts website is updated much later than when the actual alerts go out. but the scrape every 5 min got the latest one! next i just need to have the slack message trigger once the csv is updated.
 
 4/8 (i am incredibly sorry this is late)
 * Finally have included the code for the Slack message!! Used an if else statement for both writing to the csv and to sending the Slack message only if the number of new incidents is greater than zero. Comparing the existing alerts to the new ones.
