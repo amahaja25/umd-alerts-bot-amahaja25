@@ -81,10 +81,10 @@ if len(new_alerts) > 0:
     slack_token = os.environ.get('SLACK_API_TOKEN')
     client = WebClient(token=slack_token)
     msg = f"""Please respond to this message with a thumbs up or down if you can/can't cover this:
-    Link: {row[0]} 
-    Date: {row[3]}
-    Title: {row[2]}
-    Alert: {row[5][:500]}"""
+    Link: {[0]} 
+    Date: {[3]}
+    Title: {[2]}
+    Alert: {[5][:500]}"""
     csv = "umd_alerts.csv"
 
 
