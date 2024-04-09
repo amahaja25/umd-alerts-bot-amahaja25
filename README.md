@@ -26,3 +26,4 @@
 * I have started to play around with getting the date based on GitHub actions -- going to work a little bit more on this in the next few days because right now they have all of the same time. I think the thing with comparing the old and new alerts would help this since it doesn't have to write the entire csv at once
 * I also don't really know how to test if the bot works or not or if the message works well/looks right until the next UMD Alert is sent.
 * Going to adjust how frequently the GitHub actions runs to like every minute so the time can be as accurate as possible.
+* For the final submission, I think I just have to make sure somehow that the message sends? And that I fix what is wrong with the time. The Slack message is the main thing I was the most stumped on before.
