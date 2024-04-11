@@ -3,6 +3,7 @@ import os
 import csv
 import time
 import requests
+import re
 from bs4 import BeautifulSoup
 from newspaper import Article
 from slack import WebClient
@@ -63,29 +64,30 @@ default_url = 'https://alert.umd.edu/alerts'
 scrape_page(default_url)
 
 base_url = 'https://alert.umd.edu/alerts?page='
-for page in range(0, 90):
+for page in range(0, 100):
     
     url = f'{base_url}{page}'
     scrape_page(url)
 
 new_alerts = [x for x in list_of_rows if x[0] not in previous_alerts]
 
+print(len(new_alerts))
 
 if len(new_alerts) > 0:
     with open("umd_alerts.csv", 'a') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["link", "title","date", "subhead", "alert_text"])
-        writer.writerows(list_of_rows)
+        writer.writerows(new_alerts)
     #if new_incidents, then send it to slack, if you don't then don't send anything 
     #slack stuff
     slack_token = os.environ.get('SLACK_API_TOKEN')
     client = WebClient(token=slack_token)
-    msg = f"""Please respond to this message with a thumbs up or down if you can/can't cover this:
-    Link: {[0]} 
-    Date: {[3]}
-    Title: {[2]}
-    Alert: {[5][:500]}"""
-    csv = "umd_alerts.csv"
+    mostrecent_alert = new_alerts[0] 
+
+    cleaned_alert_text = re.sub(r'\s+', ' ', mostrecent_alert[3][:500]).strip()
+    member_id = 'U06FUFNJ2PK'
+
+    msg = f"<@{member_id}> Please react to this message with a thumbs up or down if you can/can't cover this: \n Link: {mostrecent_alert[0]} \n Date: {mostrecent_alert[2]} \n Title: {mostrecent_alert[1]} \n Alert: {cleaned_alert_text}"
 
 
     try:
