@@ -6,13 +6,16 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from newspaper import Article
-from slack import WebClient
-from slack.errors import SlackApiError
+# from slack import WebClient
+# from slack.errors import SlackApiError
 from datetime import datetime, timezone
 
-with open('umd_alerts.csv', 'r') as existing_alerts:
-    reader = csv.DictReader(existing_alerts)
-    previous_alerts = [x['link'] for x in reader]
+if os.path.exists('umd_alerts.csv'):
+    with open('umd_alerts.csv', 'r') as existing_alerts:
+        reader = csv.DictReader(existing_alerts)
+        previous_alerts = [x['link'] for x in reader]
+else:
+    previous_alerts = []
 
 #open the old csv
 # save the old/existing links 
@@ -37,7 +40,7 @@ def scrape_page(url):
         for li in lis:
             title = li.find('a')
             if title:
-                link = 'https://alert.umd.edu/' + li.find('a')['href']
+                link = 'https://alert.umd.edu' + li.find('a')['href']
                 article = Article(link)
                 article.download() 
                 article.parse()
@@ -64,7 +67,7 @@ default_url = 'https://alert.umd.edu/alerts'
 scrape_page(default_url)
 
 base_url = 'https://alert.umd.edu/alerts?page='
-for page in range(0, 100):
+for page in range(0, 200):
     
     url = f'{base_url}{page}'
     scrape_page(url)
@@ -74,12 +77,20 @@ new_alerts = [x for x in list_of_rows if x[0] not in previous_alerts]
 print(len(new_alerts))
 
 if len(new_alerts) > 0:
-    with open("umd_alerts.csv", 'a') as csvfile:
+    file_exists = os.path.isfile("umd_alerts.csv")
+    
+    with open("umd_alerts.csv", 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["link", "title","date", "subhead", "alert_text"])
+        # Only write the header if the file does not exist
+        if not file_exists or os.path.getsize("umd_alerts.csv") == 0:
+            writer.writerow(["link", "title", "date", "subhead", "alert_text", "scraped_at"])
         writer.writerows(new_alerts)
+    
+
+
     #if new_incidents, then send it to slack, if you don't then don't send anything 
     #slack stuff
+'''
     slack_token = os.environ.get('SLACK_API_TOKEN')
     client = WebClient(token=slack_token)
     mostrecent_alert = new_alerts[0] 
@@ -104,6 +115,7 @@ if len(new_alerts) > 0:
         print(f"Got an error: {e.response['error']}")
     else:
         pass
+'''
 
 
 
