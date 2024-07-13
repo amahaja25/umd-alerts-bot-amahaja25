@@ -112,7 +112,7 @@ if len(new_alerts) > 0:
     
 
 
-    #if new_incidents, then send it to slack, if you don't then don't send anything 
+    #if new incidents, then send it to slack, if not then don't send anything 
     #slack stuff
 '''
     slack_token = os.environ.get('SLACK_API_TOKEN')
