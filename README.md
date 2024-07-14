@@ -1,6 +1,6 @@
 # UMD Alerts scraper
 
-I wrote this web scraper to grab all of the UMD Alerts posted on the alerts.umd.edu website and put them into one csv. This originally started as a project for my news applications class in Spring 2024, but I continued to work on it after the semester ended in my free time. 
+I wrote this web scraper to grab all of the UMD Alerts posted on the <a href="alert.umd.edu">alert.umd.edu</a> website and put them into one csv. This originally started as a project for my news applications class in Spring 2024, but I continued to work on it after the semester ended in my free time. 
 
 The scraper uses the Python library BeautifulSoup and iterates through all the page numbers on the site to get the text of each alert using the newspaper3k Python library. I also added a function that categorizes certain alerts based on if key words are present, such as gas line, robbery, indecent exposure and weather as well as test alerts, which happen the first Wednesday of each month. 
 
