@@ -3,7 +3,6 @@ import os
 import csv
 import time
 import requests
-import re
 from bs4 import BeautifulSoup
 from newspaper import Article
 # from slack import WebClient
